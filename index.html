@@ -1,0 +1,665 @@
+<invoke name="fs_write">
+<parameter name="path"></parameter>
+<parameter name="content"><!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e3c72">
+    <meta name="description" content="Ninja Legends - Game Turn-Based RPG">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Ninja Legends: Shadow Warriors</title>
+    
+    <!-- Inline Manifest via Data URI -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Ninja Legends: Shadow Warriors","short_name":"Ninja Legends","description":"Game ninja turn-based RPG","start_url":"./","display":"standalone","background_color":"%231e3c72","theme_color":"%231e3c72","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><defs><radialGradient id=%22bg%22 cx=%2250%25%22 cy=%2250%25%22 r=%2250%25%22><stop offset=%220%25%22 style=%22stop-color:%23667eea%22/><stop offset=%22100%25%22 style=%22stop-color:%231e3c72%22/></radialGradient></defs><circle cx=%22256%22 cy=%22256%22 r=%22256%22 fill=%22url(%23bg)%22/><text x=%22256%22 y=%22320%22 font-size=%22280%22 text-anchor=%22middle%22>🥷</text><text x=%22256%22 y=%22450%22 font-size=%2260%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22bold%22 fill=%22%23ffd700%22>NINJA</text></svg>","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],"categories":["games","entertainment"],"lang":"id"}'>
+    
+    <!-- Inline Icon -->
+    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23667eea"/><stop offset="100%" style="stop-color:%231e3c72"/></radialGradient></defs><circle cx="256" cy="256" r="256" fill="url(%23bg)"/><text x="256" y="320" font-size="280" text-anchor="middle">🥷</text><text x="256" y="450" font-size="60" text-anchor="middle" font-family="Arial" font-weight="bold" fill="%23ffd700">NINJA</text></svg>'>
+    <link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23667eea"/><stop offset="100%" style="stop-color:%231e3c72"/></radialGradient></defs><circle cx="256" cy="256" r="256" fill="url(%23bg)"/><text x="256" y="320" font-size="280" text-anchor="middle">🥷</text></svg>'>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        .game-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: #ffd700;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .shake { animation: shake 0.4s; }
+        .flash { animation: flash 0.3s; }
+
+        .menu-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 12px auto;
+            padding: 18px;
+            font-size: 1.1em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.95);
+        }
+
+        .menu-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .menu-btn.primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 2s infinite;
+        }
+
+        .menu-btn.success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .menu-btn.warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .team-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .ninja-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .ninja-card:active {
+            transform: scale(0.95);
+        }
+
+        .ninja-card.selected {
+            border-color: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+            background: rgba(0, 100, 0, 0.3);
+        }
+
+        .ninja-card .slot-number {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background: #ffd700;
+            color: #000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .ninja-avatar {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ninja-name {
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .ninja-stats {
+            font-size: 0.75em;
+            color: #ccc;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 2px 0;
+        }
+
+        .selection-info {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            border: 1px solid #ffd700;
+        }
+
+        .battle-screen-content {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 12px;
+            border: 2px solid #ffd700;
+        }
+
+        .battle-field {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .team-side {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .team-side h3 {
+            text-align: center;
+            font-size: 0.85em;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .team-side.player h3 {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .team-side.enemy h3 {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6666;
+        }
+
+        .battle-ninja {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 8px;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .battle-ninja.active-turn {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .battle-ninja.dead {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        .battle-ninja-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .battle-ninja-avatar {
+            font-size: 1.8em;
+        }
+
+        .battle-ninja-name {
+            font-weight: bold;
+            font-size: 0.8em;
+            flex: 1;
+        }
+
+        .hp-bar, .chakra-bar {
+            width: 100%;
+            height: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 7px;
+            overflow: hidden;
+            margin: 3px 0;
+            position: relative;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #00ff00);
+            transition: width 0.5s;
+        }
+
+        .chakra-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0066ff, #00ffff);
+            transition: width 0.5s;
+        }
+
+        .bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.6em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            white-space: nowrap;
+        }
+
+        .skills-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .skill-btn {
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .skill-btn:active {
+            transform: scale(0.95);
+        }
+
+        .skill-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .skill-btn .skill-name {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 0.95em;
+        }
+
+        .skill-btn .skill-info {
+            font-size: 0.75em;
+            opacity: 0.85;
+        }
+
+        .battle-log {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 12px;
+            border: 1px solid #444;
+        }
+
+        .log-entry {
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75em;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .damage-text { color: #ff6666; font-weight: bold; }
+        .heal-text { color: #66ff66; font-weight: bold; }
+        .info-text { color: #66ccff; }
+
+        .target-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .target-btn {
+            padding: 12px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .target-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        .result-screen {
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        .result-title {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .victory { color: #ffd700; }
+        .defeat { color: #ff6666; }
+
+        .stats-summary {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .stats-summary p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px;
+            border-top: 2px solid #ffd700;
+            display: none;
+            z-index: 1000;
+        }
+
+        .install-banner.show {
+            display: block;
+            animation: slideUp 0.4s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .install-banner-text {
+            flex: 1;
+            font-size: 0.9em;
+        }
+
+        .install-btn {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-banner {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .turn-indicator {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            font-size: 0.9em;
+        }
+
+        .how-to-play {
+            text-align: left;
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .how-to-play p {
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .saved-team-btn {
+            background: rgba(0, 100, 0, 0.3);
+            border: 2px solid #00ff00;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            margin: 8px 0;
+            width: 100%;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .saved-team-btn:active {
+            transform: scale(0.98);
+        }
+
+        .difficulty-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .diff-btn {
+            padding: 15px 8px;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .diff-btn.selected {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .diff-btn.easy { border-color: #00ff00; }
+        .diff-btn.normal { border-color: #ffd700; }
+        .diff-btn.hard { border-color: #ff0000; }
+
+        @media (min-width: 600px) {
+            .team-selection {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .header h1 {
+                font-size: 2.5em;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-text {
+            color: #ffd700;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 215, 0, 0.3);
+            border-top-color: #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Memuat Ninja Legends...</div>
+    </div>
+
+    <div class="game-container">
+        <div class="header">
+            <h1>🥷 NINJA LEGENDS 🥷</h1>
+            <div class="subtitle">Shadow Warriors</div>
+        </div>
+
+        <!-- Menu Screen -->
+        <div id="menuScreen" class="screen active">
+            <div class="menu-screen">
+                <button class="menu-btn primary" onclick="showScreen('difficultySelect')">⚔️ Mulai Pertarungan</button>
+                <button class="menu-btn" onclick="showScreen('savedTeams')">💾 Tim Tersimpan</button>
+                <button class="menu-btn" onclick="showScreen('howToPlay')">📖 Cara Bermain</button>
+                <button class="menu-btn success" onclick="toggleSound()" id="soundBtn">🔊 Suara: ON</button>
+                <button class="menu-btn warning" onclick="showInstallGuide()">📱 Install App</button>
+            </div>
+        </div>
+
+        <!-- Difficulty Select -->
+        <div id="difficultySelect" class="screen">
+            <div class="menu-screen">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">Pilih Kesulitan</h2>
+                <div class="difficulty-select">
+                    <button class="diff-btn easy" onclick="selectDifficulty('easy')">😊<br>Mudah</button>
+                    <button class="diff-btn normal selected" onclick="selectDifficulty('normal')">⚔️<br>Normal</button>
+                    <button class="diff-btn hard" onclick="selectDifficulty('hard')">💀<br>Sulit</button>
+                </div>
+                <button class="menu-btn" onclick="showScreen('teamSelect')">Lanjut Pilih Tim →</button>
+                <button class="menu-btn" onclick="showScreen('menuScreen')">← Kembali</button>
+            </div>
+        </div>
+
+        <!-- Saved Teams Screen -->
+        <div id="savedTeams" class="screen">
+            <div class="menu-screen">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">💾 Tim Tersimpan</h2>
+                <div id="savedTeamsList" style="max-width: 400px; margin: 0 auto;"></div>
+  
